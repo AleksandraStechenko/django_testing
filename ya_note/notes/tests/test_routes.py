@@ -67,7 +67,7 @@ class TestRoutes(TestCase):
             ('notes:detail', self.slug),
             ('notes:edit', self.slug),
             ('notes:delete', self.slug),
-            )
+        )
 
         for name, args in redirect_urls:
             with self.subTest(name=name):

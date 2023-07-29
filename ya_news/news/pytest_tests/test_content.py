@@ -30,7 +30,9 @@ def test_news_order(client, create_news_data):
 @pytest.mark.django_db
 def test_comments_order(client, create_comment_data):
     """Тест: проверяет сортировку комментариев в хронологическом порядке."""
-    response = client.get(reverse('news:detail', args=(create_comment_data.id,)))
+    response = client.get(
+        reverse('news:detail', args=(create_comment_data.id,))
+    )
     news = response.context['news']
     all_comments = news.comment_set.all()
     assert all_comments[0].created < all_comments[1].created
