@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 from django.conf import settings
+from django.urls import reverse
 
 from news.models import Comment, News
 
@@ -52,7 +53,7 @@ def create_news_data():
             text='Текст новости.',
             date=today - timedelta(days=index)
         )
-        for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
+        for index in range(settings.NEWS_COUNT_ON_HOME_PAGE)
     ]
     News.objects.bulk_create(all_news)
 
@@ -70,7 +71,27 @@ def create_comment_data(author, news):
 
 
 @pytest.fixture
-def form_data():
+def commment_form_data():
     return {
         'text': 'Текст комментария.'
     }
+
+
+@pytest.fixture
+def news_detail_url(news_id_for_args):
+    return reverse('news:detail', args=news_id_for_args)
+
+
+@pytest.fixture
+def comment_detail_url(create_comment_data):
+    return reverse('news:detail', args=(create_comment_data.id,))
+
+
+@pytest.fixture
+def comment_delete_url(comment_id_for_args):
+    return reverse('news:delete', args=comment_id_for_args)
+
+
+@pytest.fixture
+def comment_edit_url(comment_id_for_args):
+    return reverse('news:edit', args=(comment_id_for_args))
