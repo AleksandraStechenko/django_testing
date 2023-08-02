@@ -37,6 +37,10 @@ class TestNoteCreation(TestCase):
         """Тест: залогиненный пользователь может создать заметку."""
         self.user_client.post(self.url, data=self.form_data)
         self.assertEqual(Note.objects.count(), 1)
+        new_note = Note.objects.last()
+        self.assertEqual(new_note.title, self.form_data['title'])
+        self.assertEqual(new_note.text, self.form_data['text'])
+        self.assertEqual(new_note.slug, self.form_data['slug'])
 
     def test_duplicate_slug_not_allowed(self):
         """Тест: невозможно создать две заметки с одинаковым slug."""
@@ -54,7 +58,7 @@ class TestNoteCreation(TestCase):
         del self.form_data['slug']
         self.user_client.post(self.url, data=self.form_data)
         self.assertEqual(Note.objects.count(), 1)
-        new_note = Note.objects.get()
+        new_note = Note.objects.last()
         expected_slug = slugify(self.form_data['title'])
         self.assertEqual(new_note.slug, expected_slug)
 

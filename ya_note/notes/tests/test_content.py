@@ -32,10 +32,9 @@ class TestRoutes(TestCase):
 
         for client, should_contain_note in clients:
             with self.subTest(client=client):
-                list_url = reverse('notes:list')
-                response = client.get(list_url)
-                note_list = response.context['object_list']
-                self.assertIs(self.note in note_list, should_contain_note)
+                response = client.get(reverse('notes:list'))
+                notes = response.context['object_list']
+                self.assertIs(self.note in notes, should_contain_note)
 
     def test_forms_on_pages(self):
         """Тест передачи формы на страницы создания и редактирования."""
