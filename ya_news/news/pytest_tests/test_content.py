@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from news.forms import CommentForm
-from news.models import Comment, News
+from news.models import News
 
 HOME_URL = reverse('news:home')
 User = get_user_model()
@@ -13,6 +13,7 @@ User = get_user_model()
 @pytest.mark.django_db
 def test_news_count(client, create_news_data):
     """Тест: проверяет количество новостей на главной странице."""
+    client.get(HOME_URL)
     news_count = News.objects.count()
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
@@ -34,8 +35,9 @@ def test_comments_order(client, create_comment_data,
     response = client.get(comment_detail_url)
     news = response.context['news']
     all_comments = news.comment_set.all()
-    for i in range(1, Comment.objects.count()):
-        assert all_comments[i - 1].created < all_comments[i].created
+    all_created_dates = [comment.created for comment in all_comments]
+    sorted_created_dates = sorted(all_created_dates)
+    assert all_created_dates == sorted_created_dates
 
 
 @pytest.mark.django_db

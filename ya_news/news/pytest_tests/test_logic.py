@@ -64,11 +64,13 @@ def test_author_can_delete_comment(
 
 def test_author_can_edit_comment(
         comment, author_client, comment_edit_url,
-        commment_form_data, news_detail_url, author
+        commment_form_data, news_detail_url
 ):
     """Тест: возможность автора редактировать свои комментарии."""
     news_url = news_detail_url + '#comments'
     original_news = comment.news
+    original_author = comment.author
+    commment_form_data['text'] = "Новый текст"
     response = author_client.post(
         comment_edit_url, commment_form_data
     )
@@ -77,7 +79,7 @@ def test_author_can_edit_comment(
     edited_news = comment.news
     assert response.status_code == HTTPStatus.FOUND
     assert comment.text == commment_form_data['text']
-    assert comment.author == author
+    assert original_author == comment.author
     assert original_news == edited_news
 
 
